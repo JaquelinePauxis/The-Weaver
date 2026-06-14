@@ -1,0 +1,54 @@
+# 🔮 Painel Oracular Profissional para NotebookLM
+
+Um painel de controle interativo desenvolvido em Front-end (HTML, CSS, JS) para acelerar e estruturar o input de leituras oraculares em ferramentas de Inteligência Artificial baseadas em RAG (como o **Google NotebookLM**).
+
+Em vez de digitar manualmente cada carta e posição, este painel funciona como um "teclado virtual avançado", permitindo que cartomantes e tarólogos gerem prompts perfeitos e blindados com apenas alguns cliques.
+
+## 🚀 Funcionalidades
+
+*   **⚡ Sem Instalação:** O sistema roda 100% no navegador (Client-side). Basta abrir o arquivo HTML.
+*   **🃏 Múltiplos Baralhos Suportados:**
+    *   **Tarot:** Arcanos Maiores e Arcanos Menores divididos por naipes (Paus, Espadas, Copas e Ouros).
+    *   **Baralho Cigano (Lenormand):** Sistema de 36 cartas completo.
+    *   **Baralho de Maria Padilha:** Estrutura completa de 37 cartas enumeradas.
+    *   **Chronos (Oráculo de Tempo):** Submenus avançados divididos em Dias da Semana, Meses, Semanas do Mês e contagem de Dias por naipes.
+*   **📖 Diversidade de Métodos de Leitura:**
+    *   *Clássicos:* Conselho, 3 Cartas, Cruz Celta, Bloco de 9.
+    *   *Temáticos:* Mais de 20 métodos profundos (C.I.R., Triângulo Amoroso, Espelho da Alma, Análise Financeira, etc.).
+    *   *Dinâmicos:* Tiragem Sequencial com limite ajustável de 3 a 15 cartas.
+*   **🤖 Otimizado para IA:** O texto de saída é gerado em uma estrutura rigorosa (`[DADOS]`, `[CARTAS]`, `[INSTRUÇÕES]`), reduzindo a chance de alucinação do modelo de linguagem.
+*   **📋 Área de Transferência Nativa:** Botão de 1 clique para copiar o prompt gerado.
+
+---
+
+## 🛠️ Como Utilizar
+
+### Passo 1: Executando o Painel
+1. Baixe ou copie o código fonte do arquivo `index.html`.
+2. Salve em seu computador com um nome de sua escolha (ex: `painel-tarot.html`).
+3. Dê um duplo clique no arquivo para abri-lo em qualquer navegador web moderno (Chrome, Edge, Firefox, Safari). Não é necessário servidor local.
+
+### Passo 2: O Fluxo de Trabalho (Workflow)
+1. **Pergunta:** Digite a pergunta do consulente no primeiro campo.
+2. **Método:** Selecione o tipo de tiragem no menu suspenso. (Se escolher "Sequencial", defina o número de cartas).
+3. **Baralho:** Escolha a aba do oráculo que deseja utilizar. Se o oráculo possuir subcategorias (como Arcanos Menores ou Chronos), uma barra de botões secundária aparecerá.
+4. **Extração:** Clique nos botões das cartas. Elas preencherão automaticamente as posições exigidas pelo método escolhido.
+5. **Geração:** O quadro à direita atualizará o texto em tempo real.
+6. **Integração:** Clique em **"Copiar para o NotebookLM"**. 
+
+### Passo 3: Conectando com o NotebookLM
+Vá até o seu Google NotebookLM onde suas fontes de estudo (PDFs, Livros, Manuais de Baralhos e Documentos de Métodos) estão armazenadas, cole o texto na barra de chat e envie. A IA lerá o prompt estruturado, cruzará com suas fontes e entregará a análise.
+
+---
+
+## 💻 Estrutura Técnica e Customização
+
+O projeto foi construído no padrão *Vanilla* (HTML5 + CSS3 + JavaScript puro) em um único arquivo, visando máxima portabilidade.
+
+### Como adicionar novas Cartas ou Baralhos
+Abra o arquivo HTML em um editor de texto ou código (como VS Code ou Bloco de Notas) e localize o objeto `estruturaBaralhos` no JavaScript. Basta adicionar um novo nó seguindo a sintaxe JSON:
+
+```javascript
+novo_baralho: {
+    direto: [ "Carta A", "Carta B", "Carta C" ]
+}

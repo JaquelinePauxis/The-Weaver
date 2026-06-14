@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Oracular Profissional - NotebookLM</title>
+    <style>
+        :root {
+            --bg-color: #121214;
+            --card-bg: #1a1a1e;
+            --text-color: #e1e1e6;
+            --primary-color: #8257e5;
+            --primary-hover: #9466ff;
+            --accent-color: #04d361;
+            --border-color: #29292e;
+            --submenu-bg: #202024;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 20px;
+        }
+
+        @media (max-width: 1000px) {
+            .container { grid-template-columns: 1fr; }
+        }
+
+        h1, h3 { margin-top: 0; color: #fff; }
+
+        .panel {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .form-group { margin-bottom: 15px; }
+        .form-row { display: flex; gap: 10px; }
+        .form-row .form-group { flex: 1; }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #a8a8b3;
+        }
+
+        input[type="text"], input[type="number"], select, textarea {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-color);
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        
+        select optgroup {
+            background-color: #202024;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        textarea { resize: vertical; min-height: 220px; font-family: monospace; font-size: 13px; }
+
+        /* ABAS PRINCIPAIS */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            background: #202024;
+            border: 1px solid var(--border-color);
+            color: #7c7c8a;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* SUBMENUS DINÂMICOS */
+        .submenus {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            background-color: var(--submenu-bg);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .sub-btn {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: #a8a8b3;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .sub-btn.active {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            background-color: rgba(4, 211, 97, 0.05);
+        }
+
+        /* GRIDS DO TECLADO */
+        .keyboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
+            background: var(--bg-color);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .keyboard-grid.grid-4-cols {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        @media (max-width: 600px) {
+            .keyboard-grid.grid-4-cols { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .card-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 12px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            text-align: center;
+            transition: all 0.15s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 50px;
+        }
+
+        .card-btn:hover {
+            border-color: var(--primary-color);
+            background-color: #202024;
+            transform: translateY(-1px);
+        }
+
+        /* TRACKER DE POSIÇÕES */
+        .positions-tracker {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .position-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #202024;
+            font-size: 14px;
+        }
+
+        .position-item:last-child { border-bottom: none; }
+        .pos-title { color: #7c7c8a; font-weight: 500; }
+        .pos-value { color: var(--accent-color); font-weight: bold; }
+
+        /* OUTPUT FIXO */
+        .output-box {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .btn-action {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.2s;
+        }
+
+        .btn-action:hover { background-color: var(--primary-hover); }
+        .btn-clear { background: none; border: 1px solid #7c7c8a; color: #7c7c8a; margin-top: 8px;}
+        .btn-clear:hover { background-color: #c53030; color: white; border-color: #c53030;}
+
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: var(--accent-color);
+            color: #000;
+            text-align: center;
+            border-radius: 4px;
+            padding: 16px;
+            position: fixed;
+            z-index: 10;
+            bottom: 30px;
+            font-weight: bold;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- PAINEL ESQUERDO: SELEÇÃO -->
+        <div class="panel">
+            <h1>A Tecelã</h1>
+            
+            <div class="form-group">
+                <label for="id-pergunta">1. Pergunta </label>
+                <input type="text" id="id-pergunta" placeholder="Digite a pergunta aqui..." oninput="atualizarPrompt()">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id-metodo">2. Método de Tiragem</label>
+                    <select id="id-metodo" onchange="mudarMetodo()">
+                        
+                        <optgroup label="Estruturas Dinâmicas">
+                            <option value="sequencial">Sequencial Numérico (3 a 15 cartas)</option>
+                        </optgroup>
+
+                        <optgroup label="Métodos Clássicos">
+                            <option value="conselho">Carta Única / Conselho Direto</option>
+                            <option value="3_cartas">3 Cartas (Passado, Presente, Futuro)</option>
+                            <option value="cruz_celta">Cruz Celta (6 posições principais)</option>
+                            <option value="9_cartas">9 Cartas (Bloco / Livre)</option>
+                        </optgroup>
+
+                        <optgroup label="Métodos Temáticos & Aprofundamentos">
+                            <option value="objetiva">Objetiva</option>
+                            <option value="c_i_r">C.I.R</option>
+                            <option value="leitura_previa">Leitura prévia para trabalhos</option>
+                            <option value="metodo_mentira">Método da mentira</option>
+                            <option value="autoconhecimento">Tiragem de autoconhecimento</option>
+                            <option value="mensagem_canalizada">Mensagem canalizada</option>
+                            <option value="portal_prosperidade">Portal da prosperidade</option>
+                            <option value="area_profissional">Tiragem de área profissional</option>
+                            <option value="analise_financeira">Campo de análise financeira</option>
+                            <option value="empreendedor">Tiragem do empreendedor</option>
+                            <option value="tomar_decisao">Devo tomar essa decisão</option>
+                            <option value="rastreando_dores">Rastreando dores</option>
+                            <option value="espelho_alma">Espelho da alma</option>
+                            <option value="aparencia_externa">Aparência externa</option>
+                            <option value="ghosting">Ghosting? Chá de sumiço?</option>
+                            <option value="conexao_espiritual">Conexão espiritual</option>
+                            <option value="triangulo_amoroso">Triângulo amoroso</option>
+                            <option value="confio_pessoa">Confio na pessoa</option>
+                            <option value="ponto_partida">Ponto de partida, renascendo de mim</option>
+                            <option value="analise_sonhos">Análises dos sonhos</option>
+                            <option value="ficar_partir">Ficar ou partir?</option>
+                        </optgroup>
+                    </select>
+                </div>
+                
+                <!-- Input auxiliar dinâmico para o método sequencial -->
+                <div class="form-group" id="container-qtd-cartas" style="max-width: 120px;">
+                    <label for="id-qtd-cartas">Qtd. Cartas</label>
+                    <input type="number" id="id-qtd-cartas" min="3" max="15" value="3" onchange="configurarSequencial()">
+                </div>
+            </div>
+
+            <label>3. Selecione o Baralho</label>
+            <div class="tabs">
+                <button class="tab-btn active" id="btn-tab-tarot" onclick="mudarBaralho('tarot')">Tarot</button>
+                <button class="tab-btn" id="btn-tab-cigano" onclick="mudarBaralho('cigano')">Baralho Cigano</button>
+                <button class="tab-btn" id="btn-tab-padilha" onclick="mudarBaralho('padilha')">Baralho de Padilha</button>
+                <button class="tab-btn" id="btn-tab-chronos" onclick="mudarBaralho('chronos')">Chronos</button>
+            </div>
+
+            <!-- Submenu Dinâmico -->
+            <div class="submenus" id="area-submenu" style="display: none;"></div>
+
+            <!-- Espaço do Teclado Virtual -->
+            <div class="keyboard-grid" id="keyboard"></div>
+
+            <!-- Monitor de Cliques -->
+            <div class="positions-tracker">
+                <h3>Sequência Selecionada</h3>
+                <div id="tracker-lista"></div>
+            </div>
+        </div>
+
+        <!-- PAINEL DIREITO: OUTPUT E COPIAR -->
+        <div class="panel output-box">
+            <h3>Prompt Estruturado</h3>
+            <textarea id="output-prompt" readonly></textarea>
+            
+            <button class="btn-action" onclick="copiarPrompt()">Copiar para o NotebookLM</button>
+            <button class="btn-action btn-clear" onclick="limparSelecao()">Limpar Tudo</button>
+            <button class="btn-action" onclick="window.open('https://notebooklm.google.com/', '_blank')">Start</button>
+        </div>
+
+    </div>
+
+    <div id="toast" class="toast">Copiado com sucesso! Vá para o NotebookLM e dê Ctrl+V.</div>
+
+    <script>
+        // --- BASE DE DADOS DOS BARALHOS ---
+        const estruturaBaralhos = {
+            tarot: {
+                subcategorias: {
+                    "Arcanos Maiores": [
+                        "0 - O Louco", "I - O Mago", "II - A Sacerdotisa", "III - A Imperatriz", "IV - O Imperador",
+                        "V - O Hierofante", "VI - Os Enamorados", "VII - O Carro", "VIII - A Justiça", "IX - O Eremita",
+                        "X - A Roda da Fortuna", "XI - A Força", "XII - O Enforcado", "XIII - A Morte", "XIV - A Temperança",
+                        "XV - O Diabo", "XVI - A Torre", "XVII - A Estrela", "XVIII - A Lua", "XIX - O Sol", "XX - O Julgamento", "XXI - O Mundo"
+                    ],
+                    "Arcanos Menores (Paus)": ["Ás de Paus", "2 de Paus", "3 de Paus", "4 de Paus", "5 de Paus", "6 de Paus", "7 de Paus", "8 de Paus", "9 de Paus", "10 de Paus", "Valete de Paus", "Cavaleiro de Paus", "Rainha de Paus", "Rei de Paus"],
+                    "Arcanos Menores (Espadas)": ["Ás de Espadas", "2 de Espadas", "3 de Espadas", "4 de Espadas", "5 de Espadas", "6 de Espadas", "7 de Espadas", "8 de Espadas", "9 de Espadas", "10 de Espadas", "Valete de Espadas", "Cavaleiro de Espadas", "Rainha de Espadas", "Rei de Espadas"],
+                    "Arcanos Menores (Copas)": ["Ás de Copas", "2 de Copas", "3 de Copas", "4 de Copas", "5 de Copas", "6 de Copas", "7 de Copas", "8 de Copas", "9 de Copas", "10 de Copas", "Valete de Copas", "Cavaleiro de Copas", "Rainha de Copas", "Rei de Copas"],
+                    "Arcanos Menores (Ouros)": ["Ás de Ouros", "2 de Ouros", "3 de Ouros", "4 de Ouros", "5 de Ouros", "6 de Ouros", "7 de Ouros", "8 de Ouros", "9 de Ouros", "10 de Ouros", "Valete de Ouros", "Cavaleiro de Ouros", "Rainha de Ouros", "Rei de Ouros"]
+                }
+            },
+            cigano: {
+                direto: [
+                    "1 - O Cavaleiro", "2 - O Trevo", "3 - O Navio", "4 - A Casa", "5 - A Árvore", "6 - As Nuvens",
+                    "7 - A Cobra", "8 - O Caixão", "9 - O Buquê", "10 - A Foice", "11 - O Chicote", "12 - Os Pássaros",
+                    "13 - A Criança", "14 - A Raposa", "15 - O Urso", "16 - A Estrela", "17 - A Cegonha", "18 - O Cachorro",
+                    "19 - A Torre", "20 - O Jardim", "21 - A Montanha", "22 - O Caminho", "23 - Os Ratos", "24 - O Coração",
+                    "25 - O Anel", "26 - O Livro", "27 - A Carta", "28 - O Cigano", "29 - A Cigana", "30 - Os Lírios",
+                    "31 - O Sol", "32 - A Lua", "33 - A Chave", "34 - O Peixe", "35 - A Âncora", "36 - A Cruz"
+                ]
+            },
+            padilha: {
+                direto: [
+                    "00 - Maria Padilha das Almas", "01 - Os Cristais Virtudes e sabedoria", "02 - O Lápis", "03 - A Luva", 
+                    "04 - A Vela", "05 - As Moedas", "06 - O Vaso de Flores", "07 - A Lua Refletida no Mar", 
+                    "08 - A Lâmpada Acesa", "09 - A Poltrona Negra", "10 - Cordas com Nós Apertados", "11 - O Menorah", 
+                    "12 - O Punhal", "13 - A Taça servida pela Mão com o anel de Cobra", "14 - A Pulseira de Ouro", 
+                    "15 - O Triângulo e o Ovo", "16 - O Quadro de Palhacinho", "17 - A Balança", "18 - A Rosa Vermelha", 
+                    "19 - O Cigarro Aceso", "20 - A Luz Vermelha Acesa", "21 - O Véu de Noiva", "22 - As Mãos em Cumprimento", 
+                    "23 - A Âncora", "24 - Uma Calça de Homem", "25 - Uma Saia de Mulher", "26 - O Perfil de uma Mulher", 
+                    "27 - O Perfil de um Homem", "28 - O Cão", "29 - A Estrela de Davi", "30 - A Ferradura", 
+                    "31 - O Malandro", "32 - A Janela de Casa", "33 - A Porta da Rua", "34 - As Borboletas sobre a Flor", 
+                    "35 - O Colar", "36 - Caminhos de Sol"
+                ]
+            },
+            chronos: {
+                subcategorias: {
+                    "Dia da Semana": ["Ás (Dom)", "2 (Seg)", "3 (Ter)", "4 (Qua)", "5 (Qui)", "6 (Sex)", "7 (Sáb)"],
+                    "Meses": ["Ás (Jan)", "2 (Fev)", "3 (Mar)", "4 (Abr)", "5 (Mai)", "6 (Jun)", "7 (Jul)", "8 (Ago)", "9 (Set)", "10 (Out)", "Valete (Nov)", "Rainha (Dez)"],
+                    "Semana do Mês (Predominância)": ["Predominância Naipe de Paus", "Predominância Naipe de Espadas", "Predominância Naipe de Copas", "Predominância Naipe de Ouros"],
+                    "Dias (Naipe Paus)": ["Ás de Paus", "2 de Paus", "3 de Paus", "4 de Paus", "5 de Paus", "6 de Paus", "7 de Paus", "8 de Paus", "9 de Paus", "10 de Paus"],
+                    "Dias (Naipe Espadas)": ["Ás de Espadas", "2 de Espadas", "3 de Espadas", "4 de Espadas", "5 de Espadas", "6 de Espadas", "7 de Espadas", "8 de Espadas", "9 de Espadas", "10 de Espadas"],
+                    "Dias (Naipe Copas)": ["Ás de Copas", "2 de Copas", "3 de Copas", "4 de Copas", "5 de Copas", "6 de Copas", "7 de Copas", "8 de Copas", "9 de Copas", "10 de Copas", "JOKER"]
+                }
+            }
+        };
+
+        // --- MAPA DINÂMICO DE MÉTODOS (POSIÇÕES) ---
+        const rotulosMetodos = {
+            // Dinâmico
+            "sequencial": [], 
+
+            // Clássicos
+            "conselho": ["Conselho Central / Situação Atual"],
+            "3_cartas": ["Passado", "Presente", "Futuro"],
+            "cruz_celta": ["1: Momento Atual", "2: O Obstáculo", "3: Alvo/Consciente", "4: Raiz/Inconsciente", "5: Passado Recente", "6: Futuro Imediato"],
+            "9_cartas": ["Carta 1", "Carta 2", "Carta 3", "Carta 4", "Carta 5", "Carta 6", "Carta 7", "Carta 8", "Carta 9"],
+
+            // Temáticos
+            "objetiva": ["Carta 1", "Carta 2", "Carta 3"],
+            "c_i_r": ["Contexto (C)", "Influência (I)", "Resultado (R)"],
+            "leitura_previa": ["Carta 1", "Carta 2", "Carta 3", "Carta 4"],
+            "metodo_mentira": ["Carta 1", "Carta 2", "Carta 3"],
+            "autoconhecimento": ["Carta 1", "Carta 2", "Carta 3", "Carta 4", "Carta 5"],
+            "mensagem_canalizada": ["Carta 1", "Carta 2", "Carta 3"],
+            "portal_prosperidade": ["Carta 1", "Carta 2", "Carta 3", "Carta 4"],
+            "area_profissional": ["Carta 1", "Carta 2", "Carta 3", "Carta 4"],
+            "analise_financeira": ["Carta 1", "Carta 2", "Carta 3", "Carta 4"],
+            "empreendedor": ["Carta 1", "Carta 2", "Carta 3", "Carta 4", "Carta 5"],
+            "tomar_decisao": ["Carta 1", "Carta 2", "Carta 3"],
+            "rastreando_dores": ["Carta 1", "Carta 2", "Carta 3", "Carta 4"],
+            "espelho_alma": ["Carta 1", "Carta 2", "Carta 3", "Carta 4", "Carta 5"],
+            "aparencia_externa": ["Carta 1", "Carta 2", "Carta 3"],
+            "ghosting": ["Carta 1", "Carta 2", "Carta 3"],
+            "conexao_espiritual": ["Carta 1", "Carta 2", "Carta 3", "Carta 4"],
+            "triangulo_amoroso": ["Carta 1", "Carta 2", "Carta 3", "Carta 4", "Carta 5"],
+            "confio_pessoa": ["Carta 1", "Carta 2", "Carta 3"],
+            "ponto_partida": ["Carta 1", "Carta 2", "Carta 3", "Carta 4", "Carta 5"],
+            "analise_sonhos": ["Carta 1", "Carta 2", "Carta 3", "Carta 4"],
+            "ficar_partir": ["Carta 1", "Carta 2", "Carta 3", "Carta 4"]
+        };
+
+        // --- ESTADO GLOBAL ---
+        let baralhoAtual = 'tarot';
+        let subcategoriaAtual = '';
+        let cartasSelecionadas = [];
+        let listaPosicoesAtuais = [];
+
+        // --- ENGINE INICIAL ---
+        function init() {
+            definirSubcategoriaPadrao();
+            renderizarSubmenus();
+            renderizarTeclado();
+            mudarMetodo();
+        }
+
+        function definirSubcategoriaPadrao() {
+            const b = estruturaBaralhos[baralhoAtual];
+            subcategoriaAtual = b.subcategorias ? Object.keys(b.subcategorias)[0] : '';
+        }
+
+        function configurarSequencial() {
+            const qtdInput = document.getElementById('id-qtd-cartas');
+            let val = parseInt(qtdInput.value) || 3;
+            if (val < 3) val = 3;
+            if (val > 15) val = 15;
+            qtdInput.value = val;
+
+            listaPosicoesAtuais = [];
+            for (let i = 1; i <= val; i++) {
+                listaPosicoesAtuais.push(`Carta ${i}`);
+            }
+            cartasSelecionadas = [];
+            renderizarTracker();
+            atualizarPrompt();
+        }
+
+        // --- ALTERNADORES ---
+        function mudarBaralho(nomeBaralho) {
+            baralhoAtual = nomeBaralho;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-tab-${nomeBaralho}`).classList.add('active');
+            definirSubcategoriaPadrao();
+            renderizarSubmenus();
+            renderizarTeclado();
+        }
+
+        function mudarSubcategoria(nomeSub) {
+            subcategoriaAtual = nomeSub;
+            document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderizarTeclado();
+        }
+
+        function mudarMetodo() {
+            const metodoSelecionado = document.getElementById('id-metodo').value;
+            const containerQtd = document.getElementById('container-qtd-cartas');
+
+            if (metodoSelecionado === 'sequencial') {
+                containerQtd.style.display = 'block';
+                configurarSequencial();
+            } else {
+                containerQtd.style.display = 'none';
+                listaPosicoesAtuais = rotulosMetodos[metodoSelecionado];
+                cartasSelecionadas = [];
+                renderizarTracker();
+                atualizarPrompt();
+            }
+        }
+
+        // --- RENDERIZADORES ---
+        function renderizarSubmenus() {
+            const area = document.getElementById('area-submenu');
+            const b = estruturaBaralhos[baralhoAtual];
+
+            if (b.subcategorias) {
+                area.style.display = 'flex';
+                area.innerHTML = '';
+                Object.keys(b.subcategorias).forEach(sub => {
+                    const btn = document.createElement('button');
+                    btn.className = `sub-btn ${sub === subcategoriaAtual ? 'active' : ''}`;
+                    btn.innerText = sub;
+                    btn.onclick = () => mudarSubcategoria(sub);
+                    area.appendChild(btn);
+                });
+            } else {
+                area.style.display = 'none';
+            }
+        }
+
+        function renderizarTeclado() {
+            const grid = document.getElementById('keyboard');
+            grid.innerHTML = '';
+            grid.className = 'keyboard-grid';
+
+            const b = estruturaBaralhos[baralhoAtual];
+            let listaCartas = b.subcategorias ? b.subcategorias[subcategoriaAtual] : b.direto;
+
+            if (b.subcategorias && subcategoriaAtual.includes("Arcanos Menores")) {
+                grid.classList.add('grid-4-cols');
+            }
+
+            listaCartas.forEach(carta => {
+                const btn = document.createElement('button');
+                btn.className = 'card-btn';
+                btn.innerText = carta;
+                btn.onclick = () => clicarCarta(carta);
+                grid.appendChild(btn);
+            });
+        }
+
+        function renderizarTracker() {
+            const lista = document.getElementById('tracker-lista');
+            lista.innerHTML = '';
+
+            listaPosicoesAtuais.forEach((posicao, index) => {
+                const item = document.createElement('div');
+                item.className = 'position-item';
+                
+                const cartaAlocada = cartasSelecionadas[index] || "Aguardando clique...";
+                const estiloCarta = cartasSelecionadas[index] ? 'pos-value' : 'pos-title';
+
+                item.innerHTML = `
+                    <span class="pos-title">${posicao}:</span>
+                    <span class="${estiloCarta}">${cartaAlocada}</span>
+                `;
+                lista.appendChild(item);
+            });
+        }
+
+        // --- SISTEMA DE CLIQUE E MONTAGEM DE PROMPT ---
+        function clicarCarta(nomeCarta) {
+            if (cartasSelecionadas.length < listaPosicoesAtuais.length) {
+                const identificadorDeBaralho = baralhoAtual.toUpperCase();
+                cartasSelecionadas.push(`${nomeCarta} (${identificadorDeBaralho})`);
+                renderizarTracker();
+                atualizarPrompt();
+            } else {
+                alert("Todas as posições configuradas para este método já foram preenchidas!");
+            }
+        }
+
+        function limparSelecao() {
+            cartasSelecionadas = [];
+            renderizarTracker();
+            atualizarPrompt();
+        }
+
+        function atualizarPrompt() {
+            const pergunta = document.getElementById('id-pergunta').value || "[Não informada]";
+            const metodoSelect = document.getElementById('id-metodo');
+            const nomeMetodo = metodoSelect.options[metodoSelect.selectedIndex].text;
+
+            let prompt = `Analise a seguinte consulta oracular estruturada. Para decodificar a dinâmica das posições e as regras específicas desta tiragem, consulte o seu documento interno de referência de MÉTODOS.\n\n`;
+            prompt += `[DADOS DA CONSULTA]\n`;
+            prompt += `* Pergunta formulada: "${pergunta}"\n`;
+            prompt += `* Método estrutural: ${nomeMetodo}\n\n`;
+            prompt += `[CARTAS EXTRAÍDAS E POSIÇÕES]\n`;
+
+            listaPosicoesAtuais.forEach((posicao, index) => {
+                const carta = cartasSelecionadas[index] || "[Pendente]";
+                prompt += `  - ${posicao} -> ${carta}\n`;
+            });
+
+            prompt += `\n[INSTRUÇÕES RIGOROSAS PARA O PROMPT]\n`;
+            prompt += `1. Acesse sua fonte de métodos e localize as regras e a semântica exata para o método "${nomeMetodo}".\n`;
+            prompt += `2. Aplique o significado técnico de cada carta de acordo com os manuais de baralho em anexo, adaptando-os à função de cada posição determinada pelo método.\n`;
+            prompt += `3. Costure uma resposta direta, clara e preditiva/analítica para a pergunta do consulente, respeitando estritamente os fatos textuais das fontes.`;
+
+            document.getElementById('output-prompt').value = prompt;
+        }
+
+        function copiarPrompt() {
+            const areaTexto = document.getElementById('output-prompt');
+            areaTexto.select();
+            navigator.clipboard.writeText(areaTexto.value).then(() => {
+                const toast = document.getElementById("toast");
+                toast.className = "toast show";
+                setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+            });
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
