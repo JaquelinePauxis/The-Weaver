@@ -1,54 +1,61 @@
-# 🔮 Painel Oracular Profissional para NotebookLM
+# 🔮 A Tecelã - Teclado Oracular para NotebookLM
 
-Um painel de controle interativo desenvolvido em Front-end (HTML, CSS, JS) para acelerar e estruturar o input de leituras oraculares em ferramentas de Inteligência Artificial baseadas em RAG (como o **Google NotebookLM**).
+Um painel de controle interativo, estilizado e inteligente, desenvolvido em Front-end (HTML, CSS, JS) para acelerar a estruturação de prompts oraculares no **Google NotebookLM** (ou outras IAs baseadas em RAG).
 
-Em vez de digitar manualmente cada carta e posição, este painel funciona como um "teclado virtual avançado", permitindo que cartomantes e tarólogos gerem prompts perfeitos e blindados com apenas alguns cliques.
-
-## 🚀 Funcionalidades
-
-*   **⚡ Sem Instalação:** O sistema roda 100% no navegador (Client-side). Basta abrir o arquivo HTML.
-*   **🃏 Múltiplos Baralhos Suportados:**
-    *   **Tarot:** Arcanos Maiores e Arcanos Menores divididos por naipes (Paus, Espadas, Copas e Ouros).
-    *   **Baralho Cigano (Lenormand):** Sistema de 36 cartas completo.
-    *   **Baralho de Maria Padilha:** Estrutura completa de 37 cartas enumeradas.
-    *   **Chronos (Oráculo de Tempo):** Submenus avançados divididos em Dias da Semana, Meses, Semanas do Mês e contagem de Dias por naipes.
-*   **📖 Diversidade de Métodos de Leitura:**
-    *   *Clássicos:* Conselho, 3 Cartas, Cruz Celta, Bloco de 9.
-    *   *Temáticos:* Mais de 20 métodos profundos (C.I.R., Triângulo Amoroso, Espelho da Alma, Análise Financeira, etc.).
-    *   *Dinâmicos:* Tiragem Sequencial com limite ajustável de 3 a 15 cartas.
-*   **🤖 Otimizado para IA:** O texto de saída é gerado em uma estrutura rigorosa (`[DADOS]`, `[CARTAS]`, `[INSTRUÇÕES]`), reduzindo a chance de alucinação do modelo de linguagem.
-*   **📋 Área de Transferência Nativa:** Botão de 1 clique para copiar o prompt gerado.
+A interface funciona como um teclado virtual avançado. Em vez de digitar cada carta manualmente, o usuário seleciona a dinâmica do jogo através de cliques, gerando um texto perfeitamente estruturado que blinda a Inteligência Artificial contra alucinações e garante que ela consulte estritamente os seus documentos e manuais.
 
 ---
 
-## 🛠️ Como Utilizar
+## ✨ Funcionalidades e Diferenciais
 
-### Passo 1: Executando o Painel
-1. Baixe ou copie o código fonte do arquivo `index.html`.
-2. Salve em seu computador com um nome de sua escolha (ex: `painel-tarot.html`).
-3. Dê um duplo clique no arquivo para abri-lo em qualquer navegador web moderno (Chrome, Edge, Firefox, Safari). Não é necessário servidor local.
+*   **Identidade Visual Exclusiva:** Interface limpa e moderna com o título "A Tecelã" em tipografia manuscrita (Caveat), além de feedback visual ágil usando cores de contraste (Rosa para o estado ativo e Amarelo para interação de passagem do mouse)[cite: 1].
+*   **Fluxo de Trabalho Lógico:** O painel guia o usuário na sequência ideal de atendimento: **1º Pergunta > 2º Baralho > 3º Método**[cite: 1].
+*   **Botão "Start" Nativo:** Um atalho prático e em destaque na área de saída para abrir o painel do Google NotebookLM instantaneamente em uma nova aba[cite: 1].
+*   **Catálogo de 5 Oráculos Integrados:**
+    *   **Baralho Cigano:** Sistema de 36 cartas clássicas.
+    *   **Tarot:** Arcanos Maiores e Arcanos Menores organizados inteligentemente por naipes.
+    *   **Maria Padilha:** Estrutura completa das 37 lâminas enumeradas.
+    *   **Chronos (Oráculo de Tempo):** Submenus avançados divididos em Dias da Semana, Meses, Semanas e contagem temporal por Naipes[cite: 1].
+    *   **Sibila Italiana:** Adição completa do baralho francês/italiano com todas as 52 cartas catalogadas[cite: 1].
+*   **Engine de Métodos Dinâmicos:** O menu de tiragens agora é inteligente e responsivo. Ele exibe apenas os métodos pertencentes ao sumário do baralho escolhido naquele momento (ex: A Mesa Real da Sibila só aparece quando a Sibila está selecionada)[cite: 1].
+*   **Tiragem Sequencial Flexível:** A opção "Sequencial Intuitiva", que permite de 1 a 15 cartas, está fixada e disponível universalmente para todos os oráculos[cite: 1].
 
-### Passo 2: O Fluxo de Trabalho (Workflow)
-1. **Pergunta:** Digite a pergunta do consulente no primeiro campo.
-2. **Método:** Selecione o tipo de tiragem no menu suspenso. (Se escolher "Sequencial", defina o número de cartas).
-3. **Baralho:** Escolha a aba do oráculo que deseja utilizar. Se o oráculo possuir subcategorias (como Arcanos Menores ou Chronos), uma barra de botões secundária aparecerá.
-4. **Extração:** Clique nos botões das cartas. Elas preencherão automaticamente as posições exigidas pelo método escolhido.
-5. **Geração:** O quadro à direita atualizará o texto em tempo real.
-6. **Integração:** Clique em **"Copiar para o NotebookLM"**. 
+---
 
-### Passo 3: Conectando com o NotebookLM
-Vá até o seu Google NotebookLM onde suas fontes de estudo (PDFs, Livros, Manuais de Baralhos e Documentos de Métodos) estão armazenadas, cole o texto na barra de chat e envie. A IA lerá o prompt estruturado, cruzará com suas fontes e entregará a análise.
+## 🚀 Como Utilizar (Workflow)
+
+Não é necessária nenhuma instalação ou configuração de servidor. O projeto roda 100% no lado do cliente (navegador).
+
+1. **Acesse o Sistema:** Dê um duplo clique no arquivo `index.html` para abri-lo em seu navegador de preferência.
+2. **Faça a Pergunta:** No passo 1, digite a questão exata do consulente.
+3. **Escolha o Baralho:** No passo 2, selecione o oráculo nas abas principais. Submenus aparecerão automaticamente se o oráculo tiver categorias (como o Tarot ou Chronos).
+4. **Defina a Tiragem:** No passo 3, escolha o método desejado. O sistema ajustará o limite de posições automaticamente.
+5. **Extraia as Cartas:** Clique nos botões correspondentes às cartas sorteadas. O painel organizará a ordem exata.
+6. **Inicie a Leitura:** Clique no botão amarelo **"Start"** para abrir o NotebookLM[cite: 1].
+7. **Copie e Cole:** Clique em **"Copiar para o NotebookLM"** e cole o prompt gerado no chat da IA, onde seus PDFs e resumos oraculares estão armazenados.
 
 ---
 
 ## 💻 Estrutura Técnica e Customização
 
-O projeto foi construído no padrão *Vanilla* (HTML5 + CSS3 + JavaScript puro) em um único arquivo, visando máxima portabilidade.
+O projeto foi construído no padrão *Vanilla* (HTML5 + CSS3 + JavaScript puro) unificado em um único arquivo, garantindo máxima velocidade e facilidade de edição.
 
-### Como adicionar novas Cartas ou Baralhos
-Abra o arquivo HTML em um editor de texto ou código (como VS Code ou Bloco de Notas) e localize o objeto `estruturaBaralhos` no JavaScript. Basta adicionar um novo nó seguindo a sintaxe JSON:
+### Como adicionar novos Métodos Dinâmicos
+Abra o arquivo HTML em um editor de código (como VS Code) e localize o objeto `metodosPorBaralho` no JavaScript. Cada baralho tem sua própria lista de métodos. Para adicionar um novo, basta inserir o nome dele e usar a função auxiliadora `gPos(quantidade)` para definir o número de cartas:
 
 ```javascript
-novo_baralho: {
-    direto: [ "Carta A", "Carta B", "Carta C" ]
+// Exemplo de adição no Tarot
+tarot: {
+    // ... métodos existentes ...
+    "Meu Novo Método": gPos(4), // Cria as posições: Carta 1, Carta 2, Carta 3, Carta 4
+}
+
+---
+
+###  Como alterar as Cartas de um Baralho
+Localize o objeto estruturaBaralhos. Para baralhos diretos, edite a array direto. Para baralhos com submenus, edite as categorias dentro de subcategorias.
+
+```JavaScript
+novo_baralho_exemplo: {
+    direto: [ "1 - Carta A", "2 - Carta B" ]
 }
