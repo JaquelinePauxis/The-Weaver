@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>⁺‧₊☽◯☾₊‧⁺</title>
     
-    <!-- Fonte Caveat solicitada -->
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
     
     <style>
@@ -17,7 +16,6 @@
             --border-color: #e3e3ec;
             --submenu-bg: #faf5f5;
             
-            /* Novas Cores Baseadas no Documento */
             --active-bg: rgb(221, 18, 177);
             --active-text: black;
             --hover-bg: yellow;
@@ -47,7 +45,6 @@
             .container { grid-template-columns: 1fr; }
         }
 
-        /* Estilização do Título A Tecelã */
         h1 { 
             margin-top: 0; 
             font-family: 'Caveat', cursive; 
@@ -93,11 +90,11 @@
             background-color: #202024;
             color: var(--text-color);
             font-weight: bold;
+            font-style: normal;
         }
 
         textarea { resize: vertical; min-height: 200px; font-family: monospace; font-size: 13px; }
 
-        /* ABAS PRINCIPAIS */
         .tabs {
             display: flex;
             flex-wrap: wrap;
@@ -107,7 +104,7 @@
             padding-bottom: 15px;
         }
 
-        .tab-btn, .sub-btn {
+        .tab-btn, .sub-btn, .tab-cat-btn {
             background: #202024;
             border: 1px solid var(--border-color);
             color: #7c7c8a;
@@ -121,20 +118,18 @@
 
         .sub-btn { padding: 6px 12px; font-size: 13px; }
 
-        /* EFEITOS SOLICITADOS (ACTIVE E HOVER) */
-        .tab-btn.active, .sub-btn.active {
+        .tab-btn.active, .sub-btn.active, .tab-cat-btn.active {
             background-color: var(--active-bg) !important;
             color: var(--active-text) !important;
             border-color: var(--active-bg) !important;
         }
 
-        .tab-btn:hover, .sub-btn:hover, .card-btn:hover {
+        .tab-btn:hover, .sub-btn:hover, .tab-cat-btn:hover, .card-btn:hover {
             background-color: var(--hover-bg) !important;
             color: var(--hover-text) !important;
             border-color: var(--hover-bg) !important;
         }
 
-        /* SUBMENUS DINÂMICOS */
         .submenus {
             display: flex;
             flex-wrap: wrap;
@@ -146,7 +141,35 @@
             border: 1px solid var(--border-color);
         }
 
-        /* GRIDS DO TECLADO */
+        /* ESTILO DOS MODIFICADORES */
+        .modifiers-box {
+            display: flex;
+            gap: 20px;
+            background: #202024;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px dashed var(--active-bg);
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .modifiers-box label {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 15px;
+        }
+
+        .modifiers-box input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--active-bg);
+        }
+
         .keyboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -177,7 +200,6 @@
             min-height: 50px;
         }
 
-        /* TRACKER DE POSIÇÕES */
         .positions-tracker {
             background: var(--bg-color);
             border: 1px solid var(--border-color);
@@ -199,7 +221,6 @@
         .pos-title { color: #ffffff; font-weight: 500; }
         .pos-value { color: var(--active-bg); font-weight: bold; }
 
-        /* OUTPUT FIXO */
         .output-box {
             position: sticky;
             top: 20px;
@@ -232,7 +253,7 @@
         .toast {
             visibility: hidden;
             min-width: 250px;
-            background-color: pink;
+            background-color: var(--active-bg);
             color: black;
             text-align: center;
             border-radius: 4px;
@@ -243,9 +264,7 @@
             font-weight: bold;
             box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
         }
-
         .toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
         @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
@@ -254,18 +273,30 @@
 
     <div class="container">
         
-        <!-- PAINEL ESQUERDO: SELEÇÃO (Fluxo ajustado: Pergunta > Baralho > Método) -->
         <div class="panel">
             <h1>⋆🐈‍⬛˖ A Tecelã ˖🕯️⋆</h1>
             
-            <!-- 1º A Pergunta -->
-            <div class="form-group">
-                <label for="id-pergunta">1º Pergunta do Cliente / Consulente</label>
-                <input type="text" id="id-pergunta" placeholder="Digite a pergunta aqui..." oninput="atualizarPrompt()">
+            <div class="form-row">
+                <!-- 1º A Pergunta -->
+                <div class="form-group" style="flex: 2;">
+                    <label for="id-pergunta">1º Pergunta do Consulente</label>
+                    <input type="text" id="id-pergunta" placeholder="Digite a pergunta aqui..." oninput="atualizarPrompt()">
+                </div>
+                
+                <!-- NOVO: 2º Tema da Leitura -->
+                <div class="form-group" style="flex: 1;">
+                    <label for="id-tema">2º Tema (Contexto)</label>
+                    <select id="id-tema" onchange="atualizarPrompt()">
+                        <option value="Geral">Geral / Múltiplo</option>
+                        <option value="Amor">Amor / Relacionamentos</option>
+                        <option value="Trabalho">Trabalho / Dinheiro</option>
+                        <option value="Espiritualidade">Espiritualidade</option>
+                    </select>
+                </div>
             </div>
 
-            <!-- 2º O Baralho -->
-            <label>2º Selecione o Baralho</label>
+            <!-- 3º O Baralho -->
+            <label>3º Selecione o Baralho</label>
             <div class="tabs">
                 <button class="tab-btn active" id="btn-tab-cigano" onclick="mudarBaralho('cigano')">Baralho Cigano</button>
                 <button class="tab-btn" id="btn-tab-tarot" onclick="mudarBaralho('tarot')">Tarot</button>
@@ -274,15 +305,25 @@
                 <button class="tab-btn" id="btn-tab-sibila" onclick="mudarBaralho('sibila')">Sibila Italiana</button>
             </div>
 
-            <!-- Submenu Dinâmico -->
             <div class="submenus" id="area-submenu" style="display: none;"></div>
 
-            <!-- 3º O Método -->
+            <!-- 4º Categoria de Método -->
+            <label>4º Categoria de Método</label>
+            <div class="tabs">
+                <button class="tab-cat-btn active" id="btn-cat-sequencia" onclick="mudarCategoriaMetodo('sequencia')">Sequencia intuitiva</button>
+                <button class="tab-cat-btn" id="btn-cat-simples" onclick="mudarCategoriaMetodo('simples')">Simples</button>
+                <button class="tab-cat-btn" id="btn-cat-objetivas" onclick="mudarCategoriaMetodo('objetivas')">Objetivas</button>
+                <button class="tab-cat-btn" id="btn-cat-mesas_complexas" onclick="mudarCategoriaMetodo('mesas_complexas')">Mesas Complexas</button>
+                <button class="tab-cat-btn" id="btn-cat-avancadas" onclick="mudarCategoriaMetodo('avancadas')">Avançadas</button>
+                <button class="tab-cat-btn" id="btn-cat-combos" onclick="mudarCategoriaMetodo('combos')">Combos</button>
+            </div>
+
+            <!-- 5º O Método Universal -->
             <div class="form-row" style="margin-bottom: 15px;">
                 <div class="form-group">
-                    <label for="id-metodo">3º Método de Tiragem</label>
+                    <label for="id-metodo">5º Método de Tiragem</label>
                     <select id="id-metodo" onchange="mudarMetodo()">
-                        <!-- Carregado dinamicamente via JS -->
+                        <!-- Preenchido via JavaScript -->
                     </select>
                 </div>
                 
@@ -292,22 +333,32 @@
                 </div>
             </div>
 
+            <!-- NOVO: MODIFICADORES DE CARTAS -->
+            <label>6º Modificadores (Marque antes de clicar na carta)</label>
+            <div class="modifiers-box">
+                <label>
+                    <input type="checkbox" id="chk-invertida"> 
+                    Carta Invertida
+                </label>
+                <label>
+                    <input type="checkbox" id="chk-fundo"> 
+                    Fundo de Deck
+                </label>
+            </div>
+
             <!-- Espaço do Teclado Virtual -->
             <div class="keyboard-grid" id="keyboard"></div>
 
-            <!-- Monitor de Cliques -->
             <div class="positions-tracker">
                 <h3>Sequência Selecionada</h3>
                 <div id="tracker-lista"></div>
             </div>
         </div>
 
-        <!-- PAINEL DIREITO: OUTPUT E AÇÕES -->
         <div class="panel output-box">
             <h3>Prompt Estruturado</h3>
             <textarea id="output-prompt" readonly></textarea>
             
-            <!-- Botões -->
             <button class="btn-action btn-start" onclick="window.open('https://notebooklm.google.com/', '_blank')">Start</button>
             <button class="btn-action" onclick="copiarPrompt()">Copiar para o NotebookLM</button>
             <button class="btn-action btn-clear" onclick="limparSelecao()">Limpar Tudo</button>
@@ -318,7 +369,6 @@
     <div id="toast" class="toast">Copiado com sucesso! Vá para o NotebookLM e dê Ctrl+V.</div>
 
     <script>
-        // --- BASE DE DADOS DOS BARALHOS ---
         const estruturaBaralhos = {
             cigano: {
                 direto: [
@@ -385,105 +435,98 @@
             }
         };
 
-        // --- MAPA DE MÉTODOS POR BARALHO ---
-        // A função auxiliar gera posições genéricas baseadas na quantidade solicitada.
         const gPos = (qtd) => Array.from({length: qtd}, (_, i) => `Carta ${i+1}`);
 
-        const metodosPorBaralho = {
-            cigano: {
-                "Sim/Não (CARTA ÚNICA)": gPos(1),
-                "Situação e desafio": gPos(2),
-                "Passado, Presente e Futuro": gPos(3),
-                "Método do Novo Amor": gPos(3),
-                "C.I.R": gPos(3),
-                "Situação / Desafio / Resolução": gPos(3),
-                "5 lâminas": gPos(5),
-                "7 lâminas": gPos(7),
-                "Templo de Afrodite": gPos(6),
-                "Cartas da Afetividade": gPos(5),
-                "Panorama": gPos(10),
-                "Cruz Celta": gPos(10),
-                "Mesa Real": gPos(36),
-                "Leitura Geral": gPos(21),
-                "Análise do Tempo": gPos(21),
-                "Previsões": gPos(21),
-                "Peladan": gPos(5),
-                "Interpretação de Sonhos": gPos(7),
-                "Conselho espiritual": gPos(4),
-                "Mensal": gPos(5),
-                "Semanal 1": gPos(8),
-                "Semanal 2": gPos(4),
-                "Relacionamento": gPos(15),
-                "Mandala astrológica": gPos(36)
+        const metodosPorCategoria = {
+            "sequencia": {
+                "sequencial": { nome: "Leitura livre (3 a 15 cartas)", posicoes: [] }
             },
-            tarot: {
-                "Rastreado Dores": gPos(7),
-                "Espelho da Alma": gPos(5),
-                "Desconstrução - o que não sou": gPos(5),
-                "Impactos da Minha Infância": gPos(8),
-                "Renascendo em Mim": gPos(5),
-                "Autoconhecimento: Eu": gPos(7),
-                "Aparência": gPos(4),
-                "Desfazendo as confusões": gPos(7),
-                "Hora de Mudar": gPos(6),
-                "Compatibilidade Amorosa": gPos(7),
-                "Explorando o Outro": gPos(4),
-                "Desvendando o Outro": gPos(9),
-                "Ficar ou Partir": gPos(6),
-                "Próximos Capítulos: Amor": gPos(5),
-                "Triângulo Amoroso": gPos(8),
-                "Chá de Sumiço": gPos(5),
-                "Quem eu Atraio?": gPos(5),
-                "O que eu preciso aprender sobre o amor": gPos(3),
-                "Método da Mentira": gPos(4),
-                "Tem alguém nos caminhos?": gPos(5),
-                "Portal da Prosperidade": gPos(5),
-                "Leitura de Energia Financeira": gPos(6),
-                "Tiragem do Empreendedor": gPos(6),
-                "Tiragem Área Profissional": gPos(8),
-                "Novos Rumos Profissionais": gPos(7),
-                "Aprender sobre minha vocação": gPos(3),
-                "Alinhamento Espiritual": gPos(6),
-                "Papo com Mentor Espiritual": gPos(7),
-                "Análise de Sonhos": gPos(5),
-                "Conselho dos Conselhos": gPos(7),
-                "Uma Visão sobre a Vida": gPos(9),
-                "Mensagem Canalizada": gPos(3),
-                "Energia do Ambiente": gPos(6),
-                "Estou sob Efeito de Magia?": gPos(7),
-                "Tarô Diário": gPos(4),
-                "Tiragem para o Mês": gPos(7),
-                "Ciclo Aniversário / Novo Ciclo": gPos(15),
-                "Ciclo Aniversário / Ano Passado": gPos(12),
-                "Devo tomar essa decisão?": gPos(5),
-                "Panorama": gPos(10)
+            "simples": {
+                "sim_nao": { nome: "Sim/Não (CARTA ÚNICA)", posicoes: gPos(1) },
+                "situacao_desafio": { nome: "Situação e desafio (2 lâminas)", posicoes: gPos(2) },
+                "passado_presente_futuro": { nome: "Passado, Presente e Futuro (3 lâminas)", posicoes: gPos(3) },
+                "novo_amor": { nome: "Método do Novo Amor (3 lâminas)", posicoes: gPos(3) },
+                "cir": { nome: "C.I.R (3 lâminas)", posicoes: gPos(3) },
+                "situacao_desafio_resolucao": { nome: "Situação / Desafio / Resolução (3 lâminas)", posicoes: gPos(3) }
             },
-            padilha: {}, // Utiliza apenas sequencial
-            chronos: {}, // Utiliza apenas sequencial
-            sibila: {
-                "Mesa Real (Gran Quadro)": gPos(52),
-                "Tiragem das Três Cartas": gPos(3),
-                "Método da Cruz": gPos(5),
-                "Método das Cinco Cartas": gPos(5),
-                "Tiragem de Sete Cartas": gPos(7),
-                "Método da Ferradura": gPos(7),
-                "Pirâmide": gPos(10)
+            "objetivas": {
+                "5_laminas": { nome: "5 lâminas", posicoes: gPos(5) },
+                "7_laminas": { nome: "7 lâminas", posicoes: gPos(7) },
+                "templo_afrodite": { nome: "Templo de Afrodite (7 cartas)", posicoes: gPos(7) },
+                "cartas_afetividade": { nome: "Cartas da Afetividade (5 cartas)", posicoes: gPos(5) }
+            },
+            "mesas_complexas": {
+                "crux_celta": { nome: "Crux Celta (10 cartas)", posicoes: gPos(10) },
+                "mesa_real": { nome: "Mesa Real (36 cartas)", posicoes: gPos(36) },
+                "leitura_geral": { nome: "Leitura Geral (21 cartas)", posicoes: gPos(21) },
+                "analise_tempo": { nome: "Análise do Tempo (36 cartas)", posicoes: gPos(36) }
+            },
+            "avancadas": {
+                "previsoes": { nome: "Previsões (21 cartas)", posicoes: gPos(21) },
+                "peladan": { nome: "Peladan (5 cartas)", posicoes: gPos(5) },
+                "interpretacao_sonhos": { nome: "Interpretação de Sonhos (7 cartas)", posicoes: gPos(7) },
+                "conselho_espiritual": { nome: "Conselho espiritual (4 cartas)", posicoes: gPos(4) },
+                "mensal": { nome: "Mensal (5 cartas)", posicoes: gPos(5) },
+                "semanal_1": { nome: "Semanal 1 (8 cartas)", posicoes: gPos(8) },
+                "semanal_2": { nome: "Semanal 2 (4 cartas)", posicoes: gPos(4) },
+                "relacionamento": { nome: "Relacionamento (15 cartas)", posicoes: gPos(15) },
+                "mandala_astrologica": { nome: "Mandala astrológica (36 cartas)", posicoes: gPos(36) }
+            },
+            "combos": {
+                "c1": { nome: "1. Rastreando Dores (7 cartas)", posicoes: gPos(7) },
+                "c2": { nome: "2. Portal da Prosperidade (5 cartas)", posicoes: gPos(5) },
+                "c3": { nome: "3. Compatibilidade Amorosa (7 cartas)", posicoes: gPos(7) },
+                "c4": { nome: "4. Uma Visão Sobre a Vida (9 cartas)", posicoes: gPos(9) },
+                "c5": { nome: "5. Hora de Mudar (6 cartas)", posicoes: gPos(6) },
+                "c6": { nome: "6. O que eu preciso Aprender? (9 cartas)", posicoes: gPos(9) },
+                "c7": { nome: "7. Quem Eu Atraio? (5 cartas)", posicoes: gPos(5) },
+                "c8": { nome: "8. Desconstrução - O que não sou (5 cartas)", posicoes: gPos(5) },
+                "c9": { nome: "9. Tenho Um Pressentimento (6 cartas)", posicoes: gPos(6) },
+                "c10": { nome: "10. Espelho da Alma (5 cartas)", posicoes: gPos(5) },
+                "c11": { nome: "11. Panorama (10 cartas)", posicoes: gPos(10) },
+                "c12": { nome: "12. Para Solteiros (7 cartas)", posicoes: gPos(7) },
+                "c13": { nome: "13. Aniversário - O novo ciclo (15 cartas)", posicoes: gPos(15) },
+                "c14": { nome: "14. Aniversário - Ciclo encerrado (12 cartas)", posicoes: gPos(12) },
+                "c15": { nome: "15. Conselho dos Conselhos (7 cartas)", posicoes: gPos(7) },
+                "c16": { nome: "16. Um Papo com meu Mentor Espiritual (7 cartas)", posicoes: gPos(7) },
+                "c17": { nome: "17. Alinhamento Espiritual (6 cartas)", posicoes: gPos(6) },
+                "c18": { nome: "18. Novos Rumos Profissionais (7 cartas)", posicoes: gPos(7) },
+                "c19": { nome: "19. Leitura Energia Financeira (6 cartas)", posicoes: gPos(6) },
+                "c20": { nome: "20. Tiragem Área Profissional (8 cartas)", posicoes: gPos(8) },
+                "c21": { nome: "21. Tiragem do Empreendedor (6 cartas)", posicoes: gPos(6) },
+                "c22": { nome: "22. Energia do Ambiente (6 cartas)", posicoes: gPos(6) },
+                "c23": { nome: "23. Desfazendo as Confusões que Eu Invento (7 cartas)", posicoes: gPos(7) },
+                "c24": { nome: "24. Estou Sob Efeito de Magia? (7 cartas)", posicoes: gPos(7) },
+                "c25": { nome: "25. Tarô Diário (4 cartas)", posicoes: gPos(4) },
+                "c26": { nome: "26. Tiragem para o Mês (7 cartas)", posicoes: gPos(7) },
+                "c27": { nome: "27. Impactos da Minha Infância (8 cartas)", posicoes: gPos(8) },
+                "c28": { nome: "28. Explorando o Outro (15 cartas)", posicoes: gPos(15) },
+                "c29": { nome: "29. Confio na Pessoa? (4 cartas)", posicoes: gPos(4) },
+                "c30": { nome: "30. Devo Tomar Essa Decisão...? (5 cartas)", posicoes: gPos(5) },
+                "c31": { nome: "31. Desvendando o Outro (9 cartas)", posicoes: gPos(9) },
+                "c32": { nome: "32. Renascendo em Mim (5 cartas)", posicoes: gPos(5) },
+                "c33": { nome: "33. Análise de Sonhos (5 cartas)", posicoes: gPos(5) },
+                "c34": { nome: "34. Próximos Capítulos Amor (6 cartas)", posicoes: gPos(6) },
+                "c35": { nome: "35. Ficar ou Partir (6 cartas)", posicoes: gPos(6) },
+                "c36": { nome: "36. Triângulo Amoroso (8 cartas)", posicoes: gPos(8) },
+                "c37": { nome: "37. Chá de Sumiço (5 cartas)", posicoes: gPos(5) },
+                "c38": { nome: "38. Aparência (4 cartas)", posicoes: gPos(4) },
+                "c39": { nome: "39. Tiragem de Autoconhecimento: Eu (7 cartas)", posicoes: gPos(7) },
+                "c40": { nome: "40. Método da Mentira (4 cartas)", posicoes: gPos(4) }
             }
         };
 
-        // --- ESTADO GLOBAL ---
-        let baralhoAtual = 'cigano'; // Inicia com cigano
+        let baralhoAtual = 'cigano';
         let subcategoriaAtual = '';
+        let categoriaMetodoAtual = 'sequencia';
         let cartasSelecionadas = [];
         let listaPosicoesAtuais = [];
-        let configuracaoDeMetodosAtuais = {};
 
-        // --- ENGINE INICIAL ---
         function init() {
             mudarBaralho('cigano');
+            mudarCategoriaMetodo('sequencia');
         }
 
-        // --- ALTERNADORES ---
         function mudarBaralho(nomeBaralho) {
             baralhoAtual = nomeBaralho;
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -492,7 +535,6 @@
             const b = estruturaBaralhos[baralhoAtual];
             subcategoriaAtual = b.subcategorias ? Object.keys(b.subcategorias)[0] : '';
             
-            popularMetodos(nomeBaralho);
             renderizarSubmenus();
             renderizarTeclado();
         }
@@ -504,28 +546,23 @@
             renderizarTeclado();
         }
 
-        function popularMetodos(nomeBaralho) {
+        function mudarCategoriaMetodo(nomeCat) {
+            categoriaMetodoAtual = nomeCat;
+            document.querySelectorAll('.tab-cat-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-cat-${nomeCat}`).classList.add('active');
+
             const selectMetodo = document.getElementById('id-metodo');
-            selectMetodo.innerHTML = ''; // Limpa os métodos
-            configuracaoDeMetodosAtuais = {}; // Reseta o cache de posições
-
-            // Opção Padrão Global
-            selectMetodo.innerHTML += `<option value="sequencial">Sequencial Intuitiva (1 a 15 cartas)</option>`;
-
-            // Carrega os específicos do baralho
-            const metodosDoBaralho = metodosPorBaralho[nomeBaralho];
-            if (metodosDoBaralho && Object.keys(metodosDoBaralho).length > 0) {
-                let optgroup = `<optgroup label="Métodos Específicos">`;
-                for (const [nome, posicoes] of Object.entries(metodosDoBaralho)) {
-                    let idVal = nome.replace(/\s+/g, '_').toLowerCase();
-                    configuracaoDeMetodosAtuais[idVal] = posicoes;
-                    optgroup += `<option value="${idVal}">${nome} (${posicoes.length} cartas)</option>`;
-                }
-                optgroup += `</optgroup>`;
-                selectMetodo.innerHTML += optgroup;
+            selectMetodo.innerHTML = '';
+            
+            const metodos = metodosPorCategoria[nomeCat];
+            for (const [key, obj] of Object.entries(metodos)) {
+                const option = document.createElement('option');
+                option.value = key;
+                option.innerText = obj.nome;
+                selectMetodo.appendChild(option);
             }
 
-            mudarMetodo(); // Atualiza a tela com o método sequencial padrão
+            mudarMetodo();
         }
 
         function mudarMetodo() {
@@ -537,7 +574,8 @@
                 configurarSequencial();
             } else {
                 containerQtd.style.display = 'none';
-                listaPosicoesAtuais = configuracaoDeMetodosAtuais[metodoSelecionado];
+                // Usamos o Spread operator [...] para não mutar a array original da configuração
+                listaPosicoesAtuais = [...metodosPorCategoria[categoriaMetodoAtual][metodoSelecionado].posicoes];
                 cartasSelecionadas = [];
                 renderizarTracker();
                 atualizarPrompt();
@@ -557,7 +595,6 @@
             atualizarPrompt();
         }
 
-        // --- RENDERIZADORES ---
         function renderizarSubmenus() {
             const area = document.getElementById('area-submenu');
             const b = estruturaBaralhos[baralhoAtual];
@@ -612,11 +649,29 @@
             });
         }
 
-        // --- LÓGICA CORE ---
+        // --- LÓGICA CORE C/ MODIFICADORES INTELIGENTES ---
         function clicarCarta(nomeCarta) {
+            const chkInvertida = document.getElementById('chk-invertida');
+            const chkFundo = document.getElementById('chk-fundo');
+            
+            // Bypass para o Fundo de Deck (cria uma posição extra caso a matriz já esteja cheia)
+            if (chkFundo.checked && cartasSelecionadas.length >= listaPosicoesAtuais.length) {
+                listaPosicoesAtuais.push("Fundo de Deck / Extra");
+            }
+
             if (cartasSelecionadas.length < listaPosicoesAtuais.length) {
                 const identificadorDeBaralho = baralhoAtual.toUpperCase();
-                cartasSelecionadas.push(`${nomeCarta} (${identificadorDeBaralho})`);
+                
+                let modificador = "";
+                if (chkInvertida.checked) modificador += " (INVERTIDA)";
+                if (chkFundo.checked) modificador += " (FUNDO DE DECK)";
+                
+                cartasSelecionadas.push(`${nomeCarta} (${identificadorDeBaralho})${modificador}`);
+                
+                // UX Safety: Desmarca as opções após o clique
+                chkInvertida.checked = false;
+                chkFundo.checked = false;
+
                 renderizarTracker();
                 atualizarPrompt();
             } else {
@@ -625,6 +680,15 @@
         }
 
         function limparSelecao() {
+            // Se o usuário adicionou Fundo de Deck extras, resetamos a lista de posições
+            const metodoSelecionado = document.getElementById('id-metodo').value;
+            if (metodoSelecionado !== 'sequencial') {
+                listaPosicoesAtuais = [...metodosPorCategoria[categoriaMetodoAtual][metodoSelecionado].posicoes];
+            } else {
+                let val = parseInt(document.getElementById('id-qtd-cartas').value) || 3;
+                listaPosicoesAtuais = gPos(val);
+            }
+            
             cartasSelecionadas = [];
             renderizarTracker();
             atualizarPrompt();
@@ -634,8 +698,16 @@
             const pergunta = document.getElementById('id-pergunta').value || "[Não informada]";
             const metodoSelect = document.getElementById('id-metodo');
             const nomeMetodo = metodoSelect.options[metodoSelect.selectedIndex].text;
+            
+            // Puxando o valor do Tema selecionado
+            const selectTema = document.getElementById('id-tema');
+            const nomeTema = selectTema.options[selectTema.selectedIndex].value;
 
             let prompt = `Analise a seguinte consulta oracular estruturada. Para decodificar a dinâmica das posições e as regras específicas desta tiragem, consulte o seu documento interno de referência de MÉTODOS.\n\n`;
+            
+            // Diretriz inquebrável inserida no topo
+            prompt += `[DIRETRIZ DE BUSCA]: Esta consulta é sobre ${nomeTema.toUpperCase()}. Priorize exclusivamente os significados das cartas presentes no seu documento de Fontes sobre ${nomeTema}.\n\n`;
+
             prompt += `[DADOS DA CONSULTA]\n`;
             prompt += `* Pergunta formulada: "${pergunta}"\n`;
             prompt += `* Método estrutural: ${nomeMetodo}\n\n`;
