@@ -141,7 +141,6 @@
             border: 1px solid var(--border-color);
         }
 
-        /* ESTILO DOS MODIFICADORES */
         .modifiers-box {
             display: flex;
             gap: 20px;
@@ -277,13 +276,11 @@
             <h1>⋆🐈‍⬛˖ A Tecelã ˖🕯️⋆</h1>
             
             <div class="form-row">
-                <!-- 1º A Pergunta -->
                 <div class="form-group" style="flex: 2;">
                     <label for="id-pergunta">1º Pergunta do Consulente</label>
                     <input type="text" id="id-pergunta" placeholder="Digite a pergunta aqui..." oninput="atualizarPrompt()">
                 </div>
                 
-                <!-- NOVO: 2º Tema da Leitura -->
                 <div class="form-group" style="flex: 1;">
                     <label for="id-tema">2º Tema (Contexto)</label>
                     <select id="id-tema" onchange="atualizarPrompt()">
@@ -295,7 +292,6 @@
                 </div>
             </div>
 
-            <!-- 3º O Baralho -->
             <label>3º Selecione o Baralho</label>
             <div class="tabs">
                 <button class="tab-btn active" id="btn-tab-cigano" onclick="mudarBaralho('cigano')">Baralho Cigano</button>
@@ -307,7 +303,6 @@
 
             <div class="submenus" id="area-submenu" style="display: none;"></div>
 
-            <!-- 4º Categoria de Método -->
             <label>4º Categoria de Método</label>
             <div class="tabs">
                 <button class="tab-cat-btn active" id="btn-cat-sequencia" onclick="mudarCategoriaMetodo('sequencia')">Sequencia intuitiva</button>
@@ -318,7 +313,6 @@
                 <button class="tab-cat-btn" id="btn-cat-combos" onclick="mudarCategoriaMetodo('combos')">Combos</button>
             </div>
 
-            <!-- 5º O Método Universal -->
             <div class="form-row" style="margin-bottom: 15px;">
                 <div class="form-group">
                     <label for="id-metodo">5º Método de Tiragem</label>
@@ -333,7 +327,6 @@
                 </div>
             </div>
 
-            <!-- NOVO: MODIFICADORES DE CARTAS -->
             <label>6º Modificadores (Marque antes de clicar na carta)</label>
             <div class="modifiers-box">
                 <label>
@@ -346,7 +339,6 @@
                 </label>
             </div>
 
-            <!-- Espaço do Teclado Virtual -->
             <div class="keyboard-grid" id="keyboard"></div>
 
             <div class="positions-tracker">
@@ -377,7 +369,9 @@
                     "13 - A Criança", "14 - A Raposa", "15 - O Urso", "16 - A Estrela", "17 - A Cegonha", "18 - O Cachorro",
                     "19 - A Torre", "20 - O Jardim", "21 - A Montanha", "22 - O Caminho", "23 - Os Ratos", "24 - O Coração",
                     "25 - O Anel", "26 - O Livro", "27 - A Carta", "28 - O Cigano", "29 - A Cigana", "30 - Os Lírios",
-                    "31 - O Sol", "32 - A Lua", "33 - A Chave", "34 - O Peixe", "35 - A Âncora", "36 - A Cruz"
+                    "31 - O Sol", "32 - A Lua", "33 - A Chave", "34 - O Peixe", "35 - A Âncora", "36 - A Cruz",
+                    "[ Tempo (37) ]", "[ Riacho (38) ]", "[ Tesouro (39) ]", "[ Fogueira (40) ]",
+                    "[ Gaiola (37) ]", "[ Pérola (38) ]", "[ Vela (39) ]", "[ Espelho (40) ]"
                 ]
             },
             tarot: {
@@ -539,10 +533,10 @@
             renderizarTeclado();
         }
 
-        function mudarSubcategoria(nomeSub) {
+        function mudarSubcategoria(nomeSub, btnElement) {
             subcategoriaAtual = nomeSub;
             document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if (btnElement) btnElement.classList.add('active');
             renderizarTeclado();
         }
 
@@ -574,7 +568,6 @@
                 configurarSequencial();
             } else {
                 containerQtd.style.display = 'none';
-                // Usamos o Spread operator [...] para não mutar a array original da configuração
                 listaPosicoesAtuais = [...metodosPorCategoria[categoriaMetodoAtual][metodoSelecionado].posicoes];
                 cartasSelecionadas = [];
                 renderizarTracker();
@@ -606,7 +599,7 @@
                     const btn = document.createElement('button');
                     btn.className = `sub-btn ${sub === subcategoriaAtual ? 'active' : ''}`;
                     btn.innerText = sub;
-                    btn.onclick = () => mudarSubcategoria(sub);
+                    btn.onclick = function() { mudarSubcategoria(sub, this); };
                     area.appendChild(btn);
                 });
             } else {
@@ -649,12 +642,10 @@
             });
         }
 
-        // --- LÓGICA CORE C/ MODIFICADORES INTELIGENTES ---
         function clicarCarta(nomeCarta) {
             const chkInvertida = document.getElementById('chk-invertida');
             const chkFundo = document.getElementById('chk-fundo');
             
-            // Bypass para o Fundo de Deck (cria uma posição extra caso a matriz já esteja cheia)
             if (chkFundo.checked && cartasSelecionadas.length >= listaPosicoesAtuais.length) {
                 listaPosicoesAtuais.push("Fundo de Deck / Extra");
             }
@@ -668,7 +659,6 @@
                 
                 cartasSelecionadas.push(`${nomeCarta} (${identificadorDeBaralho})${modificador}`);
                 
-                // UX Safety: Desmarca as opções após o clique
                 chkInvertida.checked = false;
                 chkFundo.checked = false;
 
@@ -680,7 +670,6 @@
         }
 
         function limparSelecao() {
-            // Se o usuário adicionou Fundo de Deck extras, resetamos a lista de posições
             const metodoSelecionado = document.getElementById('id-metodo').value;
             if (metodoSelecionado !== 'sequencial') {
                 listaPosicoesAtuais = [...metodosPorCategoria[categoriaMetodoAtual][metodoSelecionado].posicoes];
@@ -699,14 +688,12 @@
             const metodoSelect = document.getElementById('id-metodo');
             const nomeMetodo = metodoSelect.options[metodoSelect.selectedIndex].text;
             
-            // Puxando o valor do Tema selecionado
             const selectTema = document.getElementById('id-tema');
             const nomeTema = selectTema.options[selectTema.selectedIndex].value;
 
             let prompt = `Analise a seguinte consulta oracular estruturada. Para decodificar a dinâmica das posições e as regras específicas desta tiragem, consulte o seu documento interno de referência de MÉTODOS.\n\n`;
             
-            // Diretriz inquebrável inserida no topo
-            prompt += `[DIRETRIZ DE BUSCA]: Esta consulta é sobre ${nomeTema.toUpperCase()}. Priorize exclusivamente os significados das cartas presentes no seu documento de Fontes sobre ${nomeTema}.\n\n`;
+            prompt += `[DIRETRIZ DE BUSCA]: Esta consulta é sobre ${nomeTema.toUpperCase()}. Priorize exclusivamente os significados das cartas presentes no seu documento de 'Fontes de ${nomeTema}'.\n\n`;
 
             prompt += `[DADOS DA CONSULTA]\n`;
             prompt += `* Pergunta formulada: "${pergunta}"\n`;
